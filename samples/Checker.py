@@ -5,7 +5,7 @@ import os
 
 date = "2022-11-18" #Should be one day before current date
 
-id = os.environ["DiagnosisKey"]
+id = os.environ["CheckerKey"]
 url = "https://diagnosis.p.rapidapi.com/api/DDxItems/"
 
 querystring = {"AuthenticationID":"DEMO_AuthenticationID"}
