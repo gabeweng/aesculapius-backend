@@ -8,26 +8,25 @@ print(cohere_api_key)
 co = cohere.Client(cohere_api_key)
 
 examples =  [
-  Example("Do you offer same day shipping?", "Shipping and handling policy"),  
-  Example("Can you ship to Italy?", "Shipping and handling policy"),  
-    Example("How long does shipping take?", "Shipping and handling policy"),  
-    Example("Can I buy online and pick up in store?", "Shipping and handling policy"),  
-    Example("What are your shipping options?", "Shipping and handling policy"),  
-    Example("My order arrived damaged, can I get a refund?", "Start return or exchange"),  
-    Example("You sent me the wrong item", "Start return or exchange"),  
-    Example("I want to exchange my item for another colour", "Start return or exchange"),  
-    Example("I ordered something and it wasn't what I expected. Can I return it?", "Start return or exchange"),  
-    Example("What's your return policy?", "Start return or exchange"),  
-    Example("Where's my package?", "Track order"),  
-    Example("When will my order arrive?", "Track order"),  
-    Example("What's my shipping number?", "Track order"),  
-    Example("Which carrier is my package with?", "Track order"),  
-    Example("Is my package delayed?", "Track order")
+  Example("I feel like no one loves me", "Self-harm"),  
+  Example("I feel meaningless", "Self-harm"),  
+  Example("I want to feel pain", "Self-harm"),  
+  Example("I want everything to end", "Self-harm"),  
+  Example("Why does no one love me?", "Self-harm"),  
+  Example("My chest hurts really badly. Please help!", "Medical attention"),  
+  Example("My arm is broken", "Medical attention"),
+  Example("I have a giant cut on my leg!", "Medical attention"),    
+  Example("I feel like I'm going to pass out", "Medical attention"),
+  Example("I think I'm getting warts on my genitals. What does that mean?", "Symptoms"),    
+  Example("I have a slight fever and cough. What do I have?", "Symptoms"),    
+  Example("I have diarrea and muscle aches. What do you think I have?", "Symptoms"),
+  Example("I have a small headache and some trouble breathing. What does that mean?", "Symptoms")
 ]
 
-inputs=[" Am I still able to return my order?",  
-        "When can I expect my package?",  
-        "Do you ship overseas?",  
+inputs=[" God I hate life.",  
+        "I feel short of breath and am feeling nauseous. What do I have?",  
+        "I am bleeding out. Please help",
+        "Hi, how are you?",
         ]
 response = co.classify(  
     model='medium',  
