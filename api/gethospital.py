@@ -7,7 +7,7 @@ import requests
 import os
 from dotenv import load_dotenv
 load_dotenv()
-cohere_api_key = os.environ['cohere_api_key']
+GoogleMapsApi = os.environ['GoogleMapsApi']
 def FindHospitals(Lat, Long):
     url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={Lat}%2C{Long}&radius=4000&type=hospital&keyword=Hospital&key={GoogleMapsApi}"
 
