@@ -2,6 +2,15 @@
 from http.server import BaseHTTPRequestHandler,HTTPServer
 from urllib import parse
 import json
+
+import cohere 
+from cohere.classify import Example
+import os
+from dotenv import load_dotenv
+load_dotenv()
+cohere_api_key = os.environ['cohere_api_key']
+print(cohere_api_key)
+co = cohere.Client(cohere_api_key)
 class handler(BaseHTTPRequestHandler):
   def setHeader(s, self):
     self.send_response(200)
@@ -45,7 +54,21 @@ class handler(BaseHTTPRequestHandler):
       self.setHeader(self)
       self.send_header('Content-type', 'application/json') # 'text/plain' for plain text
       self.end_headers()
-      ret_obj = [{"text": "Hi "+data["message"]}]
+      chat_conv = "Patient: " + data["message"] + "\n"
+      inputs=[data["message"] ]
+      sentiment = co.classify(  
+      model='medium',  
+      inputs=inputs,  
+      examples=examples)
+      print(sentiment)
+      response = co.generate(
+      prompt=''.join(chat_conv)+"Doctor:",
+        model='xlarge', max_tokens=20,   temperature=1.2,   k=0,   p=0.75,
+        frequency_penalty=0,   presence_penalty=0, return_likelihoods='NONE',
+        stop_sequences=["Patient:", "\n"]
+    ).generations[0].text.strip().split("Patient:")[0]
+    
+      ret_obj = [{"text":response}]
       self.wfile.write(json.dumps(ret_obj).encode())
       #self.wfile.close()
       return
@@ -59,7 +82,7 @@ class handler(BaseHTTPRequestHandler):
       self.end_headers()
       self.wfile.write(json.dumps(ret_obj).encode())
       #self.wfile.close()
-
+      
 ## Run the server, for local testing
 def main():
     port = 80
