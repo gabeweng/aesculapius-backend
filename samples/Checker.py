@@ -12,7 +12,7 @@ querystring = {"AuthenticationID": "DEMO_AuthenticationID"}
 payload = {
   "id": "9999",
   "tests": "[]",
-  "symptoms": "[{\"ID\":1},{\"ID\":19},{\"ID\":103},{\"ID\":14}]"
+  "symptoms": "[{\"ID\":13},{\"ID\":6},{\"ID\":103},{\"ID\":14}]"
 }
 headers = {
   "content-type": "application/json",
@@ -29,6 +29,10 @@ x = requests.get(
   f"https://diagnosisapi.azurewebsites.net/api/DDxItems/9999?AuthenticationID=DEMO_AuthenticationID"
 )
 y = json.loads(x.text)
-print(y[0]["name"]) #Unrealable Must Regester for full information
 
 
+
+thename = ""
+
+for i in range(len(y)): #Unrealable Must Regester for full information 
+  print(y[i]['name'])
