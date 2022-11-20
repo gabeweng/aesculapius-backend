@@ -36,3 +36,4 @@ yarn-error.log*
 next-env.d.ts
 .env
 package-lock.json
+api/__pycache__/bot.cpython-310.pyc

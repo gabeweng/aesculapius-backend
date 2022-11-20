@@ -3,7 +3,10 @@ from http.server import BaseHTTPRequestHandler,HTTPServer
 from urllib import parse
 import json
 import requests
-
+try:
+  from api.util.bot import bot
+except:
+  from util.bot import bot
 from twilio.twiml.messaging_response import MessagingResponse
 
 class handler(BaseHTTPRequestHandler):
@@ -53,9 +56,11 @@ class handler(BaseHTTPRequestHandler):
       self.setHeader(self)
       self.send_header('Content-type', 'text/html') # 'text/plain' for plain text
       self.end_headers()
-      
+
+      retintent,response= bot(msg)
+
       resp = MessagingResponse()
-      resp.message("The Rdddd "+msg)
+      resp.message(response)
       print(str(resp))
       # return str(resp)
 

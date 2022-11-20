@@ -7,13 +7,12 @@ import cohere
 from cohere.classify import Example
 import os
 from dotenv import load_dotenv
-load_dotenv()
 try:
-  cohere_api_key = os.environ['cohere_api_key']
-  print(cohere_api_key)
-  co = cohere.Client(cohere_api_key)
+  from api.util.bot import bot
 except:
-  print("please enter the cohere_api_key")
+  from util.bot import bot
+load_dotenv()
+
 
 
 
@@ -75,27 +74,8 @@ class handler(BaseHTTPRequestHandler):
       self.setHeader(self)
       self.send_header('Content-type', 'application/json') # 'text/plain' for plain text
       self.end_headers()
-      chat_conv = "Patient: " + data["message"] + "\n"
-      inputs=[data["message"] ]
-
-      intent = co.classify(  
-      model='medium',  
-      inputs=inputs,  
-      examples=examples)
-
-      retintent = "None"
-      print(intent.classifications[0].confidence)
-      if (intent.classifications[0].confidence >= 0.95):
-        retintent = intent.classifications[0].prediction
-        print(retintent)
-
-      response = co.generate(
-      prompt=''.join(chat_conv)+"Doctor:",
-        model='xlarge', max_tokens=20,   temperature=1.2,   k=0,   p=0.75,
-        frequency_penalty=0,   presence_penalty=0, return_likelihoods='NONE',
-        stop_sequences=["Patient:", "\n"]
-    ).generations[0].text.strip().split("Patient:")[0]
-    
+      
+      retintent,response= bot(data["message"])
       ret_obj = [{"text":response},{"intent":retintent}]
       self.wfile.write(json.dumps(ret_obj).encode())
       #self.wfile.close()
@@ -113,7 +93,7 @@ class handler(BaseHTTPRequestHandler):
 
 ## Run the server, for local testing
 def main():
-    port = 80
+    port = 5000
     print('Listening on localhost:%s' % port)
     server = HTTPServer(('', port), handler)
     server.serve_forever()
