@@ -54,12 +54,12 @@ def bot(_inputs,user="Bob"):
     if retintent == "Self-harm":
       SMSText("ALERT: A USER SAID: " + _inputs)
     response=co.generate(
-    prompt=''.join(chat_conv)+"Doctor:",
+    prompt=''.join(chat_conv)+"Family Doctor:",
         model='xlarge', max_tokens=20,   temperature=1.2,   k=0,   p=0.75,
         frequency_penalty=0,   presence_penalty=0, return_likelihoods='NONE',
         stop_sequences=["Patient:", "\n"]
     ).generations[0].text.strip().split("Patient:")[0]
-    history[user] = "Patient: " + _inputs + "\n" +"Doctor: "+ response + "\n"
+    history[user] = "Patient: " + _inputs + "\n" +"Family Doctor: "+ response + "\n"
     return retintent, response
 
 def SMSText(message):
