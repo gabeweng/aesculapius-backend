@@ -48,16 +48,17 @@ class handler(BaseHTTPRequestHandler):
 
       content_len = int(self.headers.get('content-length'))
       post_body = self.rfile.read(content_len)
-      print(parse.parse_qs(post_body))
+      # print(parse.parse_qs(post_body))
       msg = (parse.parse_qs(post_body)[b'Body'][0].decode("utf-8") )
-      print(msg)
+      user = (parse.parse_qs(post_body)[b'From'][0].decode("utf-8") )
+      # print(msg)
     #   data = json.loads(post_body)
     #   print("Received: ", data)
       self.setHeader(self)
       self.send_header('Content-type', 'text/html') # 'text/plain' for plain text
       self.end_headers()
 
-      retintent,response= bot(msg)
+      retintent,response= bot(msg,user)
 
       resp = MessagingResponse()
       resp.message(response)

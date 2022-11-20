@@ -70,12 +70,12 @@ class handler(BaseHTTPRequestHandler):
       content_len = int(self.headers.get('content-length'))
       post_body = self.rfile.read(content_len)
       data = json.loads(post_body)
-      print("Received: ", data)
+      # print("Received: ", data)
       self.setHeader(self)
       self.send_header('Content-type', 'application/json') # 'text/plain' for plain text
       self.end_headers()
-      
-      retintent,response= bot(data["message"])
+      # print(data)
+      retintent,response= bot(data["message"],data["sender"])
       ret_obj = [{"text":response},{"intent":retintent}]
       self.wfile.write(json.dumps(ret_obj).encode())
       #self.wfile.close()

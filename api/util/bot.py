@@ -33,8 +33,14 @@ examples =  [
   Example("I have a small headache and some trouble breathing. What does that mean", "Symptoms")
 ]
 
-def bot(_inputs):
-    chat_conv = "Patient: " + _inputs + "\n"
+history = dict()
+def bot(_inputs,user="Bob"):
+    global history
+    if user in history:
+      print("NEW USER")
+      chat_conv = history[user] + "Patient: " + _inputs + "\n"
+    else:
+      chat_conv = "Patient: " + _inputs + "\n"
     intent = co.classify(  
     model='medium',  
     inputs=[_inputs],  
@@ -47,12 +53,14 @@ def bot(_inputs):
         print(retintent)
     if retintent == "Self-harm":
       SMSText("ALERT: A USER SAID: " + _inputs)
-    return retintent, co.generate(
+    response=co.generate(
     prompt=''.join(chat_conv)+"Doctor:",
         model='xlarge', max_tokens=20,   temperature=1.2,   k=0,   p=0.75,
         frequency_penalty=0,   presence_penalty=0, return_likelihoods='NONE',
         stop_sequences=["Patient:", "\n"]
     ).generations[0].text.strip().split("Patient:")[0]
+    history[user] = "Patient: " + _inputs + "\n" +"Doctor: "+ response + "\n"
+    return retintent, response
 
 def SMSText(message):
   account_sid = os.environ['TWILIO_ACCOUNT_SID']
