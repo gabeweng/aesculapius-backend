@@ -8,8 +8,15 @@ from cohere.classify import Example
 import os
 from dotenv import load_dotenv
 load_dotenv()
-cohere_api_key = os.environ['cohere_api_key']
-print(cohere_api_key)
+try:
+  cohere_api_key = os.environ['cohere_api_key']
+  print(cohere_api_key)
+  co = cohere.Client(cohere_api_key)
+except:
+  print("please enter the cohere_api_key")
+
+
+
 examples =  [
   Example("I feel like no one loves me", "Self-harm"),  
   Example("I feel meaningless", "Self-harm"),  
@@ -20,12 +27,11 @@ examples =  [
   Example("My arm is broken", "Medical attention"),
   Example("I have a giant cut on my leg!", "Medical attention"),    
   Example("I feel like I'm going to pass out", "Medical attention"),
-  Example("I think I'm getting warts on my genitals. What does that mean?", "Symptoms"),    
-  Example("I have a slight fever and cough. What do I have?", "Symptoms"),    
-  Example("I have diarrea and muscle aches. What do you think I have?", "Symptoms"),
-  Example("I have a small headache and some trouble breathing. What does that mean?", "Symptoms")
+  Example("I think I'm getting warts on my genitals. What does that mean", "Symptoms"),    
+  Example("I have a slight fever and cough. What do I have", "Symptoms"),    
+  Example("I have diarrea and muscle aches. What do you think I have", "Symptoms"),
+  Example("I have a small headache and some trouble breathing. What does that mean", "Symptoms")
 ]
-co = cohere.Client(cohere_api_key)
 class handler(BaseHTTPRequestHandler):
   def setHeader(s, self):
     self.send_response(200)
@@ -71,11 +77,18 @@ class handler(BaseHTTPRequestHandler):
       self.end_headers()
       chat_conv = "Patient: " + data["message"] + "\n"
       inputs=[data["message"] ]
-      sentiment = co.classify(  
+
+      intent = co.classify(  
       model='medium',  
       inputs=inputs,  
       examples=examples)
-      print(sentiment)
+
+      retintent = "None"
+      print(intent.classifications[0].confidence)
+      if (intent.classifications[0].confidence >= 0.95):
+        retintent = intent.classifications[0].prediction
+        print(retintent)
+
       response = co.generate(
       prompt=''.join(chat_conv)+"Doctor:",
         model='xlarge', max_tokens=20,   temperature=1.2,   k=0,   p=0.75,
@@ -83,7 +96,7 @@ class handler(BaseHTTPRequestHandler):
         stop_sequences=["Patient:", "\n"]
     ).generations[0].text.strip().split("Patient:")[0]
     
-      ret_obj = [{"text":response}]
+      ret_obj = [{"text":response},{"intent":retintent}]
       self.wfile.write(json.dumps(ret_obj).encode())
       #self.wfile.close()
       return
